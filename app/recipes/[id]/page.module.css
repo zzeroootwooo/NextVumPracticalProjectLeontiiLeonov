@@ -1,0 +1,162 @@
+.container {
+  min-height: calc(100vh - 64px);
+  background: #f5f7fa;
+  padding: 40px 24px;
+}
+
+.content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 60px 40px;
+  border-radius: 12px 12px 0 0;
+  color: white;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  text-decoration: none;
+  margin-bottom: 24px;
+  font-size: 14px;
+  transition: opacity 0.2s;
+}
+
+.backButton:hover {
+  opacity: 0.8;
+}
+
+.title {
+  font-size: 42px;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+}
+
+.meta {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  flex-wrap: wrap;
+  opacity: 0.95;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+}
+
+.body {
+  background: white;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.actions {
+  padding: 24px 40px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.section {
+  padding: 40px;
+  border-bottom: 1px solid #eee;
+}
+
+.section:last-child {
+  border-bottom: none;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.description {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #555;
+  margin: 0;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.listItem {
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  background: #f9fafb;
+  border-left: 3px solid #667eea;
+  border-radius: 4px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #444;
+}
+
+.instructions {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #444;
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+.notFound {
+  max-width: 600px;
+  margin: 100px auto;
+  text-align: center;
+  padding: 60px 40px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.notFoundIcon {
+  font-size: 80px;
+  margin-bottom: 16px;
+}
+
+.notFoundTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 12px 0;
+}
+
+.notFoundText {
+  font-size: 16px;
+  color: #666;
+  margin: 0 0 24px 0;
+}
+
+@media (max-width: 768px) {
+  .header,
+  .section,
+  .actions {
+    padding: 24px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .meta {
+    gap: 16px;
+  }
+}

@@ -1,0 +1,94 @@
+.container {
+  min-height: calc(100vh - 64px);
+  background: #f5f7fa;
+  padding: 40px 24px;
+}
+
+.header {
+  max-width: 1200px;
+  margin: 0 auto 40px auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.createButton {
+  padding: 12px 24px;
+  background: #0070f3;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.createButton:hover {
+  background: #0051cc;
+  transform: translateY(-2px);
+}
+
+.grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.empty {
+  max-width: 1200px;
+  margin: 80px auto;
+  text-align: center;
+  padding: 60px 24px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.emptyIcon {
+  font-size: 80px;
+  margin-bottom: 16px;
+}
+
+.emptyTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 12px 0;
+}
+
+.emptyText {
+  font-size: 16px;
+  color: #666;
+  margin: 0 0 24px 0;
+}
+
+.loading {
+  max-width: 1200px;
+  margin: 80px auto;
+  text-align: center;
+  font-size: 18px;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 24px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
