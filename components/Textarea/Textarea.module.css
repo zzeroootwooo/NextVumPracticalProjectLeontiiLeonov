@@ -1,0 +1,43 @@
+.wrapper {
+  margin-bottom: 16px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.textarea {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+  resize: vertical;
+  min-height: 120px;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: #0070f3;
+}
+
+.textarea::placeholder {
+  color: #999;
+}
+
+.error {
+  border-color: #e00;
+}
+
+.errorMessage {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #e00;
+}

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { auth, signOut } from '@/lib/auth'
-import Button from './Button'
+import Button from '@/components/Button'
 import styles from './Navbar.module.css'
 
 export default async function Navbar() {
