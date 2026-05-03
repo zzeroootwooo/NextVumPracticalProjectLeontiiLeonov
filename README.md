@@ -1,36 +1,131 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Recipe App - Full-Stack Next.js Application
+
+A full-stack web application for sharing and managing recipes, built with Next.js, Prisma, and SQLite.
+
+## Features
+
+- **User Authentication**: Register, login, and logout functionality with NextAuth
+- **Recipe Management**: Full CRUD operations (Create, Read, Update, Delete)
+- **Authorization**: Users can only edit and delete their own recipes
+- **Modern UI**: Beautiful, responsive design with CSS modules
+- **Database**: SQLite database managed with Prisma ORM
+
+## Tech Stack
+
+- **Framework**: Next.js 15 with App Router
+- **Language**: TypeScript
+- **Database**: SQLite with Prisma ORM
+- **Authentication**: NextAuth v5
+- **Styling**: CSS Modules
+- **Password Hashing**: bcryptjs
+
+## Project Structure
+
+```
+├── app/                      # Next.js app directory
+│   ├── api/                 # API routes
+│   │   ├── auth/            # NextAuth endpoints
+│   │   ├── register/        # User registration
+│   │   └── recipes/         # Recipe CRUD endpoints
+│   ├── login/               # Login page
+│   ├── register/            # Registration page
+│   └── recipes/             # Recipe pages
+│       ├── [id]/            # Recipe details & edit
+│       └── new/             # Create recipe
+├── components/              # Reusable components
+│   ├── Button/
+│   ├── Card/
+│   ├── Input/
+│   ├── Navbar/
+│   ├── RecipeCard/
+│   └── Textarea/
+├── lib/                     # Utility functions
+│   ├── auth.ts              # NextAuth configuration
+│   └── prisma.ts            # Prisma client
+├── prisma/                  # Database schema and migrations
+├── types/                   # TypeScript type definitions
+└── middleware.ts            # Route protection
+
+```
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+ installed
+- npm or yarn package manager
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Set up environment variables:
+
+Create a `.env` file with:
+```
+DATABASE_URL="file:./dev.db"
+NEXTAUTH_SECRET="your-secret-key"
+NEXTAUTH_URL="http://localhost:3000"
+```
+
+4. Run database migrations:
+
+```bash
+npx prisma migrate dev
+```
+
+5. Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+6. Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features Overview
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Authentication
+- User registration with email validation
+- Secure password hashing
+- Session management with NextAuth
+- Protected routes middleware
 
-## Learn More
+### Recipe Operations
+- **List**: Browse all recipes with card-based layout
+- **Create**: Add new recipes with title, description, ingredients, instructions, and cooking time
+- **Read**: View detailed recipe information
+- **Update**: Edit your own recipes
+- **Delete**: Remove your own recipes with confirmation
 
-To learn more about Next.js, take a look at the following resources:
+### Database Schema
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**User Model:**
+- id, name, email (unique), password, timestamps
+- One-to-many relationship with recipes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Recipe Model:**
+- id, title, description, ingredients, instructions, cookingTime
+- timestamps, userId (foreign key)
+- Belongs to User
 
-## Deploy on Vercel
+## Development
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+# Run development server
+npm run dev
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Run Prisma Studio (database GUI)
+npx prisma studio
+
+# Create new migration
+npx prisma migrate dev --name migration_name
+```
+
+## License
+
+This project was created as a practical assignment for educational purposes.
