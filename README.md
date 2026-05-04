@@ -131,6 +131,25 @@ npx prisma studio
 npx prisma migrate dev --name migration_name
 ```
 
+## Screenshots
+
+Application screenshots demonstrating all key features:
+
+### Home Page
+![Home Page](screenshots/home.png)
+
+### Authentication
+![Register](screenshots/register.png)
+![Login](screenshots/login.png)
+
+### Recipe Management
+![Recipes List](screenshots/recipes-list.png)
+![Recipe Details](screenshots/recipe-details.png)
+![Create Recipe](screenshots/recipe-create.png)
+![Edit Recipe](screenshots/recipe-edit.png)
+
+> **Note:** To add screenshots, run the application (`npm run dev`) and capture images of each page. Save them in the `screenshots/` folder with the filenames shown above. See `screenshots/README.md` for detailed instructions.
+
 ## License
 
 This project was created as a practical assignment for educational purposes.
