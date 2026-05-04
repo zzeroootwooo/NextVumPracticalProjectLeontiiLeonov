@@ -66,10 +66,15 @@ npm install
 
 3. Set up environment variables:
 
-Create a `.env` file with:
+Copy `.env.example` to `.env`:
+```bash
+cp .env.example .env
 ```
-DATABASE_URL="file:./dev.db"
-NEXTAUTH_SECRET="your-secret-key"
+
+Or create a `.env` file manually with:
+```
+DATABASE_URL="file:./prisma/dev.db"
+NEXTAUTH_SECRET="your-secret-key-change-this-in-production"
 NEXTAUTH_URL="http://localhost:3000"
 ```
 
