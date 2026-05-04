@@ -49,3 +49,6 @@ next-env.d.ts
 
 # assignment files
 nextjs_project_assignment.docx
+
+.env
+.env.example
