@@ -218,10 +218,6 @@ Currently included in `screenshots/`:
 
 ![Edit recipe page](screenshots/edit-recipe.png)
 
-The assignment also expects screenshots for:
-
-- recipe details page
-
 ## Assignment Notes
 
 This repository includes:
