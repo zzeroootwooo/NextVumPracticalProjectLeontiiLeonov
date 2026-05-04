@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, FormEvent } from 'react'
+import { use, useState, useEffect, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import Input from '@/components/Input'
 import Textarea from '@/components/Textarea'
@@ -8,7 +8,8 @@ import Button from '@/components/Button'
 import { Recipe, RecipeFormData } from '@/types'
 import styles from './page.module.css'
 
-export default function EditRecipePage({ params }: { params: { id: string } }) {
+export default function EditRecipePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const router = useRouter()
   const [recipe, setRecipe] = useState<Recipe | null>(null)
   const [formData, setFormData] = useState<RecipeFormData>({
@@ -26,7 +27,7 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
   useEffect(() => {
     const fetchRecipe = async () => {
       try {
-        const response = await fetch(`/api/recipes/${params.id}`)
+        const response = await fetch(`/api/recipes/${id}`)
 
         if (!response.ok) {
           setError('Recipe not found')
@@ -51,7 +52,7 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
     }
 
     fetchRecipe()
-  }, [params.id])
+  }, [id])
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -59,7 +60,7 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
     setLoading(true)
 
     try {
-      const response = await fetch(`/api/recipes/${params.id}`, {
+      const response = await fetch(`/api/recipes/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -80,7 +81,7 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
 
       setSuccess(true)
       setTimeout(() => {
-        router.push(`/recipes/${params.id}`)
+        router.push(`/recipes/${id}`)
       }, 1000)
     } catch (error) {
       setError('An error occurred. Please try again.')
