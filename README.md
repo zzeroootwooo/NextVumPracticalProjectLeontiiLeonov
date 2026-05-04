@@ -67,11 +67,13 @@ npm install
 3. Set up environment variables:
 
 Copy `.env.example` to `.env`:
+
 ```bash
 cp .env.example .env
 ```
 
 Or create a `.env` file manually with:
+
 ```
 DATABASE_URL="file:./prisma/dev.db"
 NEXTAUTH_SECRET="your-secret-key-change-this-in-production"
@@ -95,12 +97,14 @@ npm run dev
 ## Features Overview
 
 ### Authentication
+
 - User registration with email validation
 - Secure password hashing
 - Session management with NextAuth
 - Protected routes middleware
 
 ### Recipe Operations
+
 - **List**: Browse all recipes with card-based layout
 - **Create**: Add new recipes with title, description, ingredients, instructions, and cooking time
 - **Read**: View detailed recipe information
@@ -110,10 +114,12 @@ npm run dev
 ### Database Schema
 
 **User Model:**
+
 - id, name, email (unique), password, timestamps
 - One-to-many relationship with recipes
 
 **Recipe Model:**
+
 - id, title, description, ingredients, instructions, cookingTime
 - timestamps, userId (foreign key)
 - Belongs to User
@@ -134,22 +140,3 @@ npx prisma migrate dev --name migration_name
 ## Screenshots
 
 Application screenshots demonstrating all key features:
-
-### Home Page
-![Home Page](screenshots/home.png)
-
-### Authentication
-![Register](screenshots/register.png)
-![Login](screenshots/login.png)
-
-### Recipe Management
-![Recipes List](screenshots/recipes-list.png)
-![Recipe Details](screenshots/recipe-details.png)
-![Create Recipe](screenshots/recipe-create.png)
-![Edit Recipe](screenshots/recipe-edit.png)
-
-> **Note:** To add screenshots, run the application (`npm run dev`) and capture images of each page. Save them in the `screenshots/` folder with the filenames shown above. See `screenshots/README.md` for detailed instructions.
-
-## License
-
-This project was created as a practical assignment for educational purposes.
