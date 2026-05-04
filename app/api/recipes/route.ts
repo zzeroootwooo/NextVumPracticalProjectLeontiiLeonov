@@ -5,7 +5,18 @@ import { prisma } from "@/lib/prisma"
 // GET all recipes
 export async function GET() {
   try {
+    const session = await auth()
     const recipes = await prisma.recipe.findMany({
+      where: session?.user?.id
+        ? {
+            OR: [
+              { isPublic: true },
+              { userId: session.user.id }
+            ]
+          }
+        : {
+            isPublic: true
+          },
       include: {
         user: {
           select: {
@@ -42,7 +53,8 @@ export async function POST(request: Request) {
       )
     }
 
-    const { title, description, ingredients, instructions, cookingTime } = await request.json()
+    const { title, description, ingredients, instructions, cookingTime, isPublic } = await request.json()
+    const parsedCookingTime = Number.parseInt(String(cookingTime), 10)
 
     // Validation
     if (!title || !description || !ingredients || !instructions || !cookingTime) {
@@ -52,7 +64,7 @@ export async function POST(request: Request) {
       )
     }
 
-    if (cookingTime < 1) {
+    if (Number.isNaN(parsedCookingTime) || parsedCookingTime < 1) {
       return NextResponse.json(
         { error: "Cooking time must be at least 1 minute" },
         { status: 400 }
@@ -65,7 +77,8 @@ export async function POST(request: Request) {
         description,
         ingredients,
         instructions,
-        cookingTime: parseInt(cookingTime),
+        cookingTime: parsedCookingTime,
+        isPublic: Boolean(isPublic),
         userId: session.user.id
       },
       include: {

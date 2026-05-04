@@ -29,6 +29,13 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
           </div>
         </div>
 
+        <div className={styles.meta}>
+          <div className={styles.time}>
+            <span>{recipe.isPublic ? '🌍' : '🔒'}</span>
+            <span>{recipe.isPublic ? 'Public' : 'Private'}</span>
+          </div>
+        </div>
+
         <div className={styles.actions}>
           <Link href={`/recipes/${recipe.id}`} className={styles.viewButton}>
             View Recipe

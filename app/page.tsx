@@ -18,10 +18,10 @@ export default async function Home() {
           {session ? (
             <div className={styles.ctas}>
               <Link href="/recipes" className={styles.primary}>
-                Browse Recipes
+                My Recipes
               </Link>
-              <Link href="/recipes/new" className={styles.secondary}>
-                Create Recipe
+              <Link href="/community" className={styles.secondary}>
+                Community Feed
               </Link>
             </div>
           ) : (
@@ -39,11 +39,11 @@ export default async function Home() {
         <div className={styles.features}>
           <div className={styles.feature}>
             <h3>Create & Share</h3>
-            <p>Share your favorite recipes with the community</p>
+            <p>Keep recipes private until you decide to publish them</p>
           </div>
           <div className={styles.feature}>
             <h3>Discover</h3>
-            <p>Browse recipes from other food enthusiasts</p>
+            <p>Browse public recipes from other food enthusiasts</p>
           </div>
           <div className={styles.feature}>
             <h3>Manage</h3>

@@ -34,7 +34,7 @@ export default function DeleteButton({ recipeId, recipeTitle }: DeleteButtonProp
 
       router.push('/recipes')
       router.refresh()
-    } catch (error) {
+    } catch {
       alert('An error occurred. Please try again.')
       setLoading(false)
     }

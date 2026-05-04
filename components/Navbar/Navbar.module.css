@@ -40,6 +40,53 @@
   align-items: center;
 }
 
+.routeButtons {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navButton {
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.navButton:hover {
+  transform: translateY(-1px);
+}
+
+.navButtonActive {
+  color: white;
+  background: var(--gradient-primary);
+  box-shadow: 0 10px 24px rgba(99, 102, 241, 0.28);
+}
+
+.navButtonMuted {
+  color: var(--gray-800);
+  background: white;
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
+}
+
+.navButtonMuted:hover {
+  background: var(--gray-50);
+  box-shadow: var(--shadow-md);
+}
+
+.navButtonIcon {
+  font-size: 15px;
+  line-height: 1;
+}
+
 .link {
   color: var(--gray-700);
   text-decoration: none;
@@ -89,12 +136,29 @@
 }
 
 @media (max-width: 768px) {
+  .container {
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
   .logo {
     font-size: 20px;
   }
 
   .nav {
+    width: 100%;
+    justify-content: space-between;
     gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .routeButtons {
+    order: 1;
+    width: 100%;
+  }
+
+  .user {
+    margin-left: auto;
   }
 
   .userName {

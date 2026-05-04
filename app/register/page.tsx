@@ -3,6 +3,7 @@
 import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { signIn } from 'next-auth/react'
 import Card from '@/components/Card'
 import Input from '@/components/Input'
 import Button from '@/components/Button'
@@ -43,11 +44,24 @@ export default function RegisterPage() {
         return
       }
 
-      setSuccess(true)
-      setTimeout(() => {
+      const signInResult = await signIn('credentials', {
+        email: formData.email,
+        password: formData.password,
+        redirect: false
+      })
+
+      if (signInResult?.error) {
+        setSuccess(true)
+        setGeneralError('Account created, but automatic login failed. Please log in manually.')
+        setLoading(false)
         router.push('/login')
-      }, 1500)
-    } catch (error) {
+        return
+      }
+
+      setSuccess(true)
+      router.push('/recipes')
+      router.refresh()
+    } catch {
       setGeneralError('An error occurred. Please try again.')
       setLoading(false)
     }
@@ -58,7 +72,7 @@ export default function RegisterPage() {
       <div className={styles.formWrapper}>
         <Card title="Create Account">
           {generalError && <div className={styles.error}>{generalError}</div>}
-          {success && <div className={styles.success}>Account created! Redirecting to login...</div>}
+          {success && <div className={styles.success}>Account created! Signing you in...</div>}
 
           <form onSubmit={handleSubmit}>
             <Input

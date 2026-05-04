@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { auth, signOut } from '@/lib/auth'
 import Button from '@/components/Button'
+import NavLinks from './NavLinks'
 import styles from './Navbar.module.css'
 
 export default async function Navbar() {
@@ -14,17 +15,16 @@ export default async function Navbar() {
         </Link>
 
         <div className={styles.nav}>
+          <NavLinks isAuthenticated={Boolean(session)} />
+
           {session ? (
             <>
-              <Link href="/recipes" className={styles.link}>
-                Recipes
-              </Link>
               <div className={styles.user}>
                 <span className={styles.userName}>Hello, {session.user?.name}</span>
                 <form
                   action={async () => {
                     'use server'
-                    await signOut()
+                    await signOut({ redirectTo: '/login' })
                   }}
                 >
                   <Button type="submit" variant="secondary">

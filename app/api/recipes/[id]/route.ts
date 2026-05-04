@@ -8,6 +8,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const session = await auth()
     const { id } = await params
     const recipe = await prisma.recipe.findUnique({
       where: { id },
@@ -23,6 +24,15 @@ export async function GET(
     })
 
     if (!recipe) {
+      return NextResponse.json(
+        { error: "Recipe not found" },
+        { status: 404 }
+      )
+    }
+
+    const isOwner = session?.user?.id === recipe.userId
+
+    if (!recipe.isPublic && !isOwner) {
       return NextResponse.json(
         { error: "Recipe not found" },
         { status: 404 }
@@ -74,12 +84,20 @@ export async function PUT(
       )
     }
 
-    const { title, description, ingredients, instructions, cookingTime } = await request.json()
+    const { title, description, ingredients, instructions, cookingTime, isPublic } = await request.json()
+    const parsedCookingTime = Number.parseInt(String(cookingTime), 10)
 
     // Validation
     if (!title || !description || !ingredients || !instructions || !cookingTime) {
       return NextResponse.json(
         { error: "All fields are required" },
+        { status: 400 }
+      )
+    }
+
+    if (Number.isNaN(parsedCookingTime) || parsedCookingTime < 1) {
+      return NextResponse.json(
+        { error: "Cooking time must be at least 1 minute" },
         { status: 400 }
       )
     }
@@ -91,7 +109,8 @@ export async function PUT(
         description,
         ingredients,
         instructions,
-        cookingTime: parseInt(cookingTime)
+        cookingTime: parsedCookingTime,
+        isPublic: Boolean(isPublic)
       },
       include: {
         user: {

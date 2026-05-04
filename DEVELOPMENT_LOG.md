@@ -1,287 +1,267 @@
 # Development Log - Recipe App
 
 ## Project Overview
-This document explains how the Recipe App works, the problems solved during development, and the technical decisions made.
 
-## Development Timeline
+This project is a full-stack recipe application built with Next.js, Prisma, SQLite, and NextAuth. It was created for the Web Programming practical assignment. The goal was to build a working app with authentication, Prisma-based database access, and full CRUD for one main entity.
 
-### Phase 1: Project Initialization
-**What was done:**
-- Initialized Next.js 15 project with TypeScript and App Router
-- Set up Prisma ORM with SQLite database
-- Created initial database schema with User and Recipe models
-- Configured project structure with component folders
+The main entity in this project is `Recipe`.
 
-**Problems solved:**
-- Initially tried to create project in a subfolder, but moved everything to root directory for cleaner structure
-- Set up proper TypeScript configuration for Next.js 15
+## What the App Does
 
-### Phase 2: Database Schema Design
-**What was done:**
-- Designed User model with authentication fields (id, name, email, password)
-- Designed Recipe model with theme-specific fields:
-  - `title` - Recipe name
-  - `description` - Recipe overview
-  - `ingredients` - List of ingredients as text
-  - `instructions` - Step-by-step cooking instructions
-  - `cookingTime` - Duration in minutes (custom field #1)
-  - `cuisine` - Type of cuisine like Italian, Mexican, etc (custom field #2)
-- Created one-to-many relationship between User and Recipe
-- Generated and ran Prisma migrations
+The application allows users to:
 
-**Problems solved:**
-- **Prisma v7 compatibility issue**: Initially installed Prisma v7, but encountered error "Missing configured driver adapter" because v7 requires explicit driver adapters even for SQLite
-- **Solution**: Downgraded to Prisma 5.22.0 which works with SQLite out of the box
-- Learned about Prisma Client singleton pattern to avoid multiple instances in development
+- register for an account
+- log in and log out
+- access a home page
+- create recipes
+- view recipe lists
+- open a details page for a single recipe
+- edit recipes they own
+- delete recipes they own
+- keep recipes private or publish them to a public community feed
 
-### Phase 3: Authentication Implementation
-**What was done:**
-- Integrated NextAuth v5 (beta) for authentication
-- Created credential provider with email/password login
-- Implemented bcryptjs for password hashing (never store plain text passwords)
-- Built registration API endpoint with validation
-- Created login and register pages with forms
-- Set up JWT-based session strategy
+## Main Technical Decisions
 
-**Problems solved:**
-- **Session management**: NextAuth v5 has different API than v4, had to use beta documentation
-- **Password security**: Implemented proper bcrypt hashing with salt rounds
-- **Email uniqueness**: Added database constraint and API validation to prevent duplicate emails
-- **Type safety**: Created proper TypeScript types for session and user objects
+### 1. Theme Choice
 
-### Phase 4: Protected Routes & Middleware
-**What was done:**
-- Created middleware.ts to protect routes like `/recipes/new` and `/recipes/[id]/edit`
-- Added session checks in API routes
-- Implemented ownership validation (users can only edit/delete their own recipes)
+The selected theme is a recipe app. This fits the assignment well because it supports a clear main entity with multiple useful fields and a natural ownership relationship between users and records.
 
-**How it works:**
-- Middleware runs before page loads, checks if user is authenticated
-- If not authenticated, redirects to `/login`
-- API routes validate both authentication AND ownership before allowing mutations
+### 2. Authentication
 
-### Phase 5: Recipe CRUD Implementation
-**What was done:**
-- **Create**: Built form at `/recipes/new` with validation, saves to database via POST API
-- **Read**: 
-  - List page at `/recipes` showing all recipes from all users
-  - Detail page at `/recipes/[id]` with full recipe information
-- **Update**: Edit page at `/recipes/[id]/edit` with pre-filled form, only for recipe owner
-- **Delete**: Delete button on detail page, only visible to recipe owner, with API validation
+Authentication is implemented with NextAuth v5 using the credentials provider.
 
-**How CRUD operations work:**
-1. **Create Recipe Flow:**
-   - User fills form → Client-side validation → POST to /api/recipes
-   - API checks authentication → Associates recipe with userId → Saves to DB with Prisma
-   - Redirects to recipe detail page
+The flow works like this:
 
-2. **Read Recipes Flow:**
-   - Server component fetches all recipes from DB
-   - Displays in grid of RecipeCard components
-   - Clicking card navigates to detail page with dynamic route
+1. A user registers with name, email, and password.
+2. The password is hashed with `bcryptjs` before being stored.
+3. The user can log in with email and password.
+4. If the credentials are valid, NextAuth creates a JWT session.
+5. Protected routes and protected actions check the current session.
+6. Logout redirects the user back to the login page.
 
-3. **Update Recipe Flow:**
-   - Detail page shows Edit button only if session.user.id === recipe.userId
-   - Edit page fetches recipe, populates form
-   - On submit → PUT to /api/recipes/[id]
-   - API validates ownership → Updates DB → Redirects back
+An extra improvement was added: after successful registration, the user is automatically logged in.
 
-4. **Delete Recipe Flow:**
-   - Delete button only shows for owner
-   - Confirmation dialog prevents accidental deletion
-   - DELETE to /api/recipes/[id]
-   - API validates ownership → Removes from DB → Redirects to list
+### 3. Database and Prisma
 
-**Problems solved:**
-- **Ownership validation**: Implemented in both UI (hiding buttons) and API (checking userId)
-- **Form validation**: Client-side validation for better UX, server-side for security
-- **Error handling**: Proper error messages for "not found", "unauthorized", "validation failed"
+The database uses SQLite and Prisma ORM.
 
-### Phase 6: Component Architecture
-**What was done:**
-- Created reusable components in separate folders:
-  - `Button/` - Styled button with variants (primary, secondary, danger, ghost)
-  - `Input/` - Text input with label, validation, and error display
-  - `Textarea/` - Multi-line input for long text fields
-  - `Card/` - White container for forms
-  - `RecipeCard/` - Recipe preview card for list page
-  - `Navbar/` - Navigation with conditional rendering based on auth state
+The schema contains:
 
-**Why this structure:**
-- Each component has its own folder with `.tsx` and `.module.css` files
-- Easy to maintain and update
-- CSS Modules prevent style conflicts
-- Components are reusable across different pages
+- `User`
+- `Recipe`
 
-### Phase 7: UI/UX Design System
-**What was done:**
-- Created comprehensive design system in `globals.css` with CSS variables
-- **Color palette**: Indigo-purple gradient theme (#667eea to #764ba2)
-- **Design elements**:
-  - Gradient backgrounds with floating orbs animation
-  - Ripple effects on buttons
-  - Shimmer animations on recipe cards
-  - Glassmorphism with backdrop-filter
-  - Focus states on inputs with colored rings
-  - Shake animation on error messages
-  - Smooth transitions and hover effects
+The `Recipe` model belongs to the user who created it through `userId`.
 
-**Problems solved:**
-- **Color consistency**: Used CSS variables instead of hard-coded colors
-- **Responsive design**: Media queries for mobile-friendly layouts
-- **Accessibility**: Proper labels, focus indicators, ARIA attributes
-- **Loading states**: Visual feedback during async operations
+Recipe fields:
 
-### Phase 8: Validation & Error Handling
-**What was implemented:**
-- **Registration validation**:
-  - Email format check with regex
-  - Password minimum length requirement
-  - Name required field check
-  - Duplicate email prevention at database level
+- `id`
+- `title`
+- `description`
+- `ingredients`
+- `instructions`
+- `cookingTime`
+- `isPublic`
+- `createdAt`
+- `updatedAt`
+- `userId`
 
-- **Login validation**:
-  - Email and password required
-  - Wrong credentials show clear error message
-  - Failed login attempts don't reveal if email exists (security)
+This satisfies the requirement for one main model with theme-specific custom fields. In this project, `ingredients`, `instructions`, and `cookingTime` are core recipe-specific fields. `isPublic` was added later to support private and public recipes.
 
-- **Recipe form validation**:
-  - All fields required (title, description, ingredients, instructions)
-  - Cooking time must be positive number
-  - Cuisine type required
+### 4. CRUD Design
 
-- **API error responses**:
-  - 400 for validation errors
-  - 401 for unauthorized access
-  - 404 for not found resources
-  - 403 for ownership violations
-  - Clear error messages in JSON responses
+CRUD is implemented through Prisma-backed API routes and App Router pages.
 
-## Technical Challenges & Solutions
+Implemented routes:
 
-### Challenge 1: Prisma Version Compatibility
-**Problem**: Prisma v7 required driver adapters that weren't compatible with simple SQLite setup.
-**Solution**: Downgraded to Prisma 5.22.0 which has stable SQLite support without additional configuration.
+- `/recipes` - current user's recipes
+- `/community` - public recipes
+- `/recipes/new` - create page
+- `/recipes/[id]` - details page
+- `/recipes/[id]/edit` - edit page
+- `/api/recipes`
+- `/api/recipes/[id]`
 
-### Challenge 2: NextAuth v5 Beta
-**Problem**: Documentation for NextAuth v5 is still evolving, many breaking changes from v4.
-**Solution**: Read beta docs carefully, used proper `auth()` function for session checks, implemented middleware correctly.
+## How CRUD Works
 
-### Challenge 3: Ownership Authorization
-**Problem**: Need to prevent users from editing/deleting recipes they don't own.
-**Solution**: 
-- UI level: Conditional rendering of Edit/Delete buttons
-- API level: Validate `recipe.userId === session.user.id` before mutations
-- Database level: Foreign key constraint ensures data integrity
+### Create
 
-### Challenge 4: Form State Management
-**Problem**: Need to handle form inputs, validation, errors, and loading states.
-**Solution**: Used React useState for form state, client-side validation before API calls, clear error messages for users.
+- The user opens `/recipes/new`
+- A form collects title, description, ingredients, instructions, cooking time, and visibility
+- The request goes to `POST /api/recipes`
+- The API validates the user session and the form values
+- Prisma creates the record in SQLite
 
-### Challenge 5: Type Safety
-**Problem**: TypeScript errors with Prisma types and NextAuth session.
-**Solution**: Created proper type definitions, extended NextAuth types for custom user fields, used Prisma generated types.
+New recipes are private by default unless the user explicitly marks them as public.
 
-## How the App Works (End-to-End Flow)
+### Read
 
-### User Registration Flow:
-1. User navigates to `/register`
-2. Fills form with name, email, password
-3. Client validates input format
-4. POST request to `/api/register`
-5. API validates email uniqueness
-6. Password hashed with bcrypt (10 salt rounds)
-7. User created in database with Prisma
-8. Redirect to `/login`
+There are two read views:
 
-### Authentication Flow:
-1. User submits login form
-2. NextAuth calls authorize function in `lib/auth.ts`
-3. Find user by email in database
-4. Compare password with bcrypt.compare()
-5. If valid, create JWT session
-6. Session stored in cookie
-7. User redirected to `/recipes`
+- `My Recipes` shows only the signed-in user's recipes
+- `Community` shows only public recipes
 
-### Recipe Creation Flow:
-1. Authenticated user clicks "Create Recipe"
-2. Middleware checks session, allows access
-3. User fills form with recipe details
-4. Client validates all fields
-5. POST to `/api/recipes` with recipe data
-6. API verifies user is authenticated
-7. Creates recipe with `userId: session.user.id`
-8. Prisma saves to database
-9. Returns created recipe
-10. Client redirects to `/recipes/[id]`
+Each recipe card links to a dynamic details page.
 
-### Recipe Viewing Flow:
-1. Server component fetches recipes with `prisma.recipe.findMany()`
-2. Includes user relation for author name
-3. Maps recipes to RecipeCard components
-4. User clicks card, navigates to `/recipes/[id]`
-5. Server fetches single recipe with `findUnique()`
-6. Checks if current user is owner
-7. Conditionally shows Edit/Delete buttons
-8. Displays full recipe information in sections
+### Details
 
-## Security Measures Implemented
+The details page loads a single recipe by id and shows more information than the list page.
 
-1. **Password Security**: bcrypt hashing, never store plain text
-2. **Session Security**: JWT tokens with secret key, HTTP-only cookies
-3. **Route Protection**: Middleware blocks unauthenticated access
-4. **Authorization**: API validates resource ownership
-5. **SQL Injection Prevention**: Prisma uses parameterized queries
-6. **CSRF Protection**: Built into NextAuth
-7. **Input Validation**: Client and server-side validation
-8. **Error Messages**: Don't reveal sensitive information
+It includes:
 
-## Database Design Decisions
+- title
+- author
+- cooking time
+- created date
+- visibility
+- description
+- ingredients
+- instructions
+- owner actions: edit and delete
 
-### Why SQLite?
-- Lightweight, no separate server needed
-- Perfect for development and learning
-- File-based, easy to reset and migrate
-- Prisma has excellent SQLite support
+If a recipe is private and the current user is not the owner, the page is not accessible.
 
-### Why Prisma?
-- Type-safe database queries
-- Automatic migration generation
-- Great developer experience with Prisma Studio
-- Built-in connection pooling
-- Easy to switch databases later if needed
+### Update
 
-### Schema Design Choices:
-- `cuid()` for IDs instead of auto-increment for better scalability
-- Timestamps (createdAt, updatedAt) for audit trail
-- `@unique` on email for data integrity
-- Foreign key with `onDelete: Cascade` would delete user's recipes if user deleted (not implemented but possible)
+- The owner opens `/recipes/[id]/edit`
+- Existing recipe values are preloaded into the form
+- The user edits values and submits the form
+- The request goes to `PUT /api/recipes/[id]`
+- The API validates ownership and updates the database
 
-## Git History Notes
+### Delete
 
-The repository shows incremental development with meaningful commits:
-1. Initial project setup
-2. Authentication implementation
-3. Recipe CRUD API endpoints
-4. UI components and pages
-5. Middleware for protection
-6. README documentation
-7. Prisma version fixes
-8. UI design improvements
+- The owner can delete a recipe from the details page
+- The UI asks for confirmation first
+- The request goes to `DELETE /api/recipes/[id]`
+- The API validates ownership and removes the record
 
-Each commit represents a logical unit of work, not one giant commit.
+## Authorization Rules
+
+One of the assignment requirements was to implement at least one ownership rule. This project has several ownership checks:
+
+- only authenticated users can create recipes
+- only authenticated users can open create and edit pages
+- only the owner can edit a recipe
+- only the owner can delete a recipe
+- private recipes are visible only to the owner
+
+Ownership is enforced in both the UI and the API:
+
+- UI hides edit/delete actions from other users
+- API checks `recipe.userId === session.user.id`
+
+## Validation and Error Handling
+
+The app handles the main failure cases required by the assignment.
+
+### Registration validation
+
+- all fields required
+- email format validated
+- password must be at least 6 characters
+- duplicate emails are blocked
+
+### Login validation
+
+- invalid credentials return an error state
+- users are not logged in unless authentication succeeds
+
+### Recipe validation
+
+- all recipe fields are required
+- cooking time must be a valid positive number
+
+### Error cases handled
+
+- recipe not found
+- unauthorized access
+- forbidden updates/deletes
+- invalid registration input
+- invalid login credentials
+- invalid recipe input
+
+## UI and Navigation
+
+The app uses CSS Modules and a shared visual system from `globals.css`.
+
+Navigation behavior:
+
+- the home page changes actions depending on authentication state
+- the navbar shows login/register for guests
+- the navbar shows logout and recipe navigation for signed-in users
+- `My Recipes` and `Community` are presented as navigation buttons in the navbar
+
+Forms use labels and show clear error states.
+
+The app is responsive and remains usable on smaller screens.
+
+## Problems Solved During Development
+
+### 1. Prisma Version Compatibility
+
+Prisma v7 caused setup friction for this SQLite-based assignment. The project uses Prisma 5.22.0 instead, which works cleanly for this use case.
+
+### 2. NextAuth v5 API Changes
+
+NextAuth v5 differs from older versions, especially in App Router usage. The project was adapted to use the proper `auth()`, `signOut()`, and route handler setup.
+
+### 3. Dynamic Route `params` Handling
+
+App Router dynamic routes required updated handling for `params` in server components, client components, and route handlers.
+
+### 4. SQLite Path Issues in Development
+
+The development server selected a different workspace root in some cases, which caused Prisma to fail opening the database file. This was fixed by using an absolute `DATABASE_URL` in `.env`.
+
+### 5. Private vs Public Recipe Behavior
+
+Originally, recipe listing behaved like a global feed. The app was then improved to separate:
+
+- private user-owned recipes
+- public community recipes
+
+This made the behavior more intuitive for newly registered users and added stronger ownership boundaries.
+
+## Migrations
+
+Prisma migrations currently included:
+
+- `20260502122828_init`
+- `20260504144523_add_recipe_visibility`
+
+## Deliverables Status
+
+The repository currently includes:
+
+- working source code
+- Prisma schema
+- Prisma migrations
+- README
+- this development log
+
+The screenshots folder already contains:
+
+- home
+- register
+- login
+- list
+- create
+
+Still missing for full assignment completeness:
+
+- details page screenshot
+- edit page screenshot
 
 ## Conclusion
 
-This project demonstrates a complete full-stack Next.js application with:
-- Secure authentication and authorization
-- Database operations with Prisma ORM
-- Full CRUD functionality with ownership rules
-- Modern, responsive UI design
-- Proper error handling and validation
-- Type-safe TypeScript code
-- RESTful API design
-- Protected routes with middleware
-- Component-based architecture
+This project meets the technical goals of the assignment:
 
-All requirements from the assignment have been met and the application is ready for deployment.
+- full-stack Next.js app
+- authentication working end to end
+- Prisma ORM with a real database
+- full CRUD for a main resource
+- ownership and protected actions
+- dynamic details page
+- validation and error handling
+
+The current implementation also includes an extra improvement beyond the minimum assignment: recipe privacy with a separate public community feed.

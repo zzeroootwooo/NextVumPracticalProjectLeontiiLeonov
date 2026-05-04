@@ -15,7 +15,8 @@ export default function NewRecipePage() {
     description: '',
     ingredients: '',
     instructions: '',
-    cookingTime: ''
+    cookingTime: '',
+    isPublic: false
   })
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -50,7 +51,7 @@ export default function NewRecipePage() {
       setTimeout(() => {
         router.push(`/recipes/${data.id}`)
       }, 1000)
-    } catch (error) {
+    } catch {
       setError('An error occurred. Please try again.')
       setLoading(false)
     }
@@ -62,7 +63,7 @@ export default function NewRecipePage() {
         <div className={styles.header}>
           <h1 className={styles.title}>Create New Recipe</h1>
           <p className={styles.subtitle}>
-            Share your delicious recipe with the community
+            Save it privately first, or publish it to the community
           </p>
         </div>
 
@@ -117,6 +118,20 @@ export default function NewRecipePage() {
             required
             rows={8}
           />
+
+          <label className={styles.visibilityCard}>
+            <input
+              type="checkbox"
+              checked={formData.isPublic}
+              onChange={(e) => setFormData({ ...formData, isPublic: e.target.checked })}
+            />
+            <div>
+              <span className={styles.visibilityTitle}>Make recipe public</span>
+              <p className={styles.visibilityText}>
+                Public recipes appear in Community Recipes. Leave this off to keep the recipe private to your account.
+              </p>
+            </div>
+          </label>
 
           <div className={styles.actions}>
             <Button type="submit" fullWidth disabled={loading || success}>

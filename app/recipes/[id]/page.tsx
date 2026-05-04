@@ -25,6 +25,18 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ i
   }) as Recipe | null
 
   if (!recipe) {
+    notFound()
+  }
+
+  const isOwner = session?.user?.id === recipe.userId
+
+  if (!recipe.isPublic && !isOwner) {
+    notFound()
+  }
+
+  const backHref = isOwner ? '/recipes' : '/community'
+
+  if (!recipe) {
     return (
       <div className={styles.container}>
         <div className={styles.notFound}>
@@ -40,16 +52,14 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ i
       </div>
     )
   }
-
-  const isOwner = session?.user?.id === recipe.userId
   const ingredients = recipe.ingredients.split('\n').filter(line => line.trim())
 
   return (
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.header}>
-          <Link href="/recipes" className={styles.backButton}>
-            ← Back to all recipes
+          <Link href={backHref} className={styles.backButton}>
+            ← Back to {isOwner ? 'my recipes' : 'community recipes'}
           </Link>
           <h1 className={styles.title}>{recipe.title}</h1>
           <div className={styles.meta}>
@@ -64,6 +74,10 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ i
             <div className={styles.metaItem}>
               <span>📅</span>
               <span>{new Date(recipe.createdAt).toLocaleDateString()}</span>
+            </div>
+            <div className={styles.metaItem}>
+              <span>{recipe.isPublic ? '🌍' : '🔒'}</span>
+              <span>{recipe.isPublic ? 'Public' : 'Private'}</span>
             </div>
           </div>
         </div>

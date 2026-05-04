@@ -1,153 +1,237 @@
-# Recipe App - Full-Stack Next.js Application
+# Recipe App
 
-A full-stack web application for sharing and managing recipes, built with Next.js, Prisma, and SQLite.
+Full-stack Next.js practical project built for the Web Programming assignment. The app uses Prisma with SQLite, credential-based authentication with NextAuth, and full CRUD for recipes.
 
-## Features
+## Project Theme
 
-- **User Authentication**: Register, login, and logout functionality with NextAuth
-- **Recipe Management**: Full CRUD operations (Create, Read, Update, Delete)
-- **Authorization**: Users can only edit and delete their own recipes
-- **Modern UI**: Beautiful, responsive design with CSS modules
-- **Database**: SQLite database managed with Prisma ORM
+This project implements a recipe management application where users can:
+
+- create an account
+- log in and log out
+- create, view, edit, and delete recipes
+- open a details page for each recipe
+- keep recipes private or publish them to the community
+
+## Main Features
+
+- Authentication with registration, login, logout, and session handling
+- Automatic login right after successful registration
+- Protected create and edit routes
+- Ownership rules: users can edit and delete only their own recipes
+- Recipe visibility:
+    - `My Recipes` shows only the signed-in user's recipes
+    - `Community` shows public recipes only
+    - new recipes are private by default
+- Full CRUD with Prisma and SQLite
+- Responsive UI built with CSS Modules
 
 ## Tech Stack
 
-- **Framework**: Next.js 15 with App Router
-- **Language**: TypeScript
-- **Database**: SQLite with Prisma ORM
-- **Authentication**: NextAuth v5
-- **Styling**: CSS Modules
-- **Password Hashing**: bcryptjs
+- Next.js 16.2.4
+- React 19
+- TypeScript
+- Prisma ORM
+- SQLite
+- NextAuth v5 beta
+- bcryptjs
+- CSS Modules
+
+## Route Overview
+
+- `/` - home page
+- `/register` - user registration
+- `/login` - user login
+- `/recipes` - private list of the current user's recipes
+- `/community` - public recipe feed
+- `/recipes/new` - create recipe
+- `/recipes/[id]` - recipe details
+- `/recipes/[id]/edit` - edit recipe
+- `/api/register` - registration API
+- `/api/recipes` - list/create recipes API
+- `/api/recipes/[id]` - details/update/delete recipe API
+
+## Authentication Flow
+
+1. A user registers with name, email, and password.
+2. The password is hashed with `bcryptjs`.
+3. Duplicate emails are blocked.
+4. After successful registration, the user is automatically signed in.
+5. NextAuth stores the session using JWT strategy.
+6. Logout redirects the user to `/login`.
+
+## Recipe Rules
+
+- Every recipe belongs to the user who created it.
+- Only the owner can edit or delete a recipe.
+- A recipe can be private or public.
+- Private recipes are visible only to their owner.
+- Public recipes appear in the community feed.
+
+## Database Models
+
+### User
+
+- `id`
+- `name`
+- `email`
+- `password`
+- `createdAt`
+- `updatedAt`
+
+### Recipe
+
+- `id`
+- `title`
+- `description`
+- `ingredients`
+- `instructions`
+- `cookingTime`
+- `isPublic`
+- `createdAt`
+- `updatedAt`
+- `userId`
 
 ## Project Structure
 
-```
-├── app/                      # Next.js app directory
-│   ├── api/                 # API routes
-│   │   ├── auth/            # NextAuth endpoints
-│   │   ├── register/        # User registration
-│   │   └── recipes/         # Recipe CRUD endpoints
-│   ├── login/               # Login page
-│   ├── register/            # Registration page
-│   └── recipes/             # Recipe pages
-│       ├── [id]/            # Recipe details & edit
-│       └── new/             # Create recipe
-├── components/              # Reusable components
-│   ├── Button/
-│   ├── Card/
-│   ├── Input/
-│   ├── Navbar/
-│   ├── RecipeCard/
-│   └── Textarea/
-├── lib/                     # Utility functions
-│   ├── auth.ts              # NextAuth configuration
-│   └── prisma.ts            # Prisma client
-├── prisma/                  # Database schema and migrations
-├── types/                   # TypeScript type definitions
-└── middleware.ts            # Route protection
-
+```text
+app/
+  api/
+    auth/[...nextauth]/
+    recipes/
+    register/
+  community/
+  login/
+  recipes/
+    [id]/
+    new/
+  register/
+components/
+  Button/
+  Card/
+  DeleteButton/
+  Input/
+  Navbar/
+  RecipeCard/
+  Textarea/
+lib/
+  auth.ts
+  prisma.ts
+prisma/
+  migrations/
+  schema.prisma
+types/
+middleware.ts
 ```
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+ installed
-- npm or yarn package manager
+- Node.js 18+
+- npm
 
 ### Installation
 
-1. Clone the repository
-2. Install dependencies:
+1. Install dependencies:
 
 ```bash
 npm install
 ```
 
-3. Set up environment variables:
+2. Create a `.env` file with:
 
-Copy `.env.example` to `.env`:
-```bash
-cp .env.example .env
-```
-
-Or create a `.env` file manually with:
-```
-DATABASE_URL="file:./prisma/dev.db"
+```env
+DATABASE_URL="file:/Users/zzeroootwooo/Desktop/work/NextVumPracticalProjectLeontiiLeonov/prisma/dev.db"
 NEXTAUTH_SECRET="your-secret-key-change-this-in-production"
 NEXTAUTH_URL="http://localhost:3000"
 ```
 
-4. Run database migrations:
+3. Run migrations:
 
 ```bash
 npx prisma migrate dev
 ```
 
-5. Start the development server:
+4. Start the app:
 
 ```bash
 npm run dev
 ```
 
-6. Open [http://localhost:3000](http://localhost:3000)
+5. Open `http://localhost:3000`
 
-## Features Overview
-
-### Authentication
-- User registration with email validation
-- Secure password hashing
-- Session management with NextAuth
-- Protected routes middleware
-
-### Recipe Operations
-- **List**: Browse all recipes with card-based layout
-- **Create**: Add new recipes with title, description, ingredients, instructions, and cooking time
-- **Read**: View detailed recipe information
-- **Update**: Edit your own recipes
-- **Delete**: Remove your own recipes with confirmation
-
-### Database Schema
-
-**User Model:**
-- id, name, email (unique), password, timestamps
-- One-to-many relationship with recipes
-
-**Recipe Model:**
-- id, title, description, ingredients, instructions, cookingTime
-- timestamps, userId (foreign key)
-- Belongs to User
-
-## Development
+## Development Commands
 
 ```bash
-# Run development server
 npm run dev
-
-# Run Prisma Studio (database GUI)
+npm run build
+npm run lint
+npx tsc --noEmit
 npx prisma studio
-
-# Create new migration
-npx prisma migrate dev --name migration_name
 ```
+
+## Prisma Migrations
+
+Current migrations in the project:
+
+- `20260502122828_init`
+- `20260504144523_add_recipe_visibility`
+
+## Validation and Error Handling
+
+The app handles:
+
+- empty required fields
+- invalid email format
+- weak passwords during registration
+- duplicate email registration
+- invalid login credentials
+- unauthorized create/edit/delete attempts
+- missing recipes
+- invalid cooking time values
 
 ## Screenshots
 
-Application screenshots demonstrating all key features:
+Currently included in `screenshots/`:
 
-### Home Page
-![Home Page](screenshots/home.png)
+- Home page
 
-### Authentication
-![Register](screenshots/register.png)
-![Login](screenshots/login.png)
+![Home page](screenshots/home-screen.png)
 
-### Recipe Management
-![Recipes List](screenshots/all-recipes.png.png)
-![Recipe Details](screenshots/recipe-details.png)
-![Create Recipe](screenshots/new-recipe.png.png)
-![Edit Recipe](screenshots/recipe-edit.png)
+- Register page
+
+![Register page](screenshots/register.png)
+
+- Login page
+
+![Login page](screenshots/login.png)
+
+- Recipes list page
+
+![Recipes list page](screenshots/all-recipes.png)
+
+- Create recipe page
+
+![Create recipe page](screenshots/new-recipe.png)
+
+- Edit recipe page
+
+![Edit recipe page](screenshots/edit-recipe.png)
+
+The assignment also expects screenshots for:
+
+- recipe details page
+
+## Assignment Notes
+
+This repository includes:
+
+- working source code
+- Prisma schema
+- Prisma migrations
+- README
+- development log in `DEVELOPMENT_LOG.md`
 
 ## License
 
-This project was created as a practical assignment for educational purposes.
+Created for educational purposes as a Web Programming practical assignment.

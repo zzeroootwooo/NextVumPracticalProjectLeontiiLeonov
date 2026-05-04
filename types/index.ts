@@ -13,6 +13,7 @@ export interface Recipe {
   ingredients: string
   instructions: string
   cookingTime: number
+  isPublic: boolean
   createdAt: Date
   updatedAt: Date
   userId: string
@@ -25,4 +26,5 @@ export interface RecipeFormData {
   ingredients: string
   instructions: string
   cookingTime: number | string
+  isPublic: boolean
 }

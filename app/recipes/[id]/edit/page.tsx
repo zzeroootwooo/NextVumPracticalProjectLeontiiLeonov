@@ -17,7 +17,8 @@ export default function EditRecipePage({ params }: { params: Promise<{ id: strin
     description: '',
     ingredients: '',
     instructions: '',
-    cookingTime: ''
+    cookingTime: '',
+    isPublic: false
   })
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -42,10 +43,11 @@ export default function EditRecipePage({ params }: { params: Promise<{ id: strin
           description: data.description,
           ingredients: data.ingredients,
           instructions: data.instructions,
-          cookingTime: data.cookingTime.toString()
+          cookingTime: data.cookingTime.toString(),
+          isPublic: data.isPublic
         })
         setFetchLoading(false)
-      } catch (error) {
+      } catch {
         setError('Failed to load recipe')
         setFetchLoading(false)
       }
@@ -83,7 +85,7 @@ export default function EditRecipePage({ params }: { params: Promise<{ id: strin
       setTimeout(() => {
         router.push(`/recipes/${id}`)
       }, 1000)
-    } catch (error) {
+    } catch {
       setError('An error occurred. Please try again.')
       setLoading(false)
     }
@@ -114,7 +116,7 @@ export default function EditRecipePage({ params }: { params: Promise<{ id: strin
         <div className={styles.header}>
           <h1 className={styles.title}>Edit Recipe</h1>
           <p className={styles.subtitle}>
-            Update your recipe details
+            Update your recipe details and visibility
           </p>
         </div>
 
@@ -169,6 +171,20 @@ export default function EditRecipePage({ params }: { params: Promise<{ id: strin
             required
             rows={8}
           />
+
+          <label className={styles.visibilityCard}>
+            <input
+              type="checkbox"
+              checked={formData.isPublic}
+              onChange={(e) => setFormData({ ...formData, isPublic: e.target.checked })}
+            />
+            <div>
+              <span className={styles.visibilityTitle}>Make recipe public</span>
+              <p className={styles.visibilityText}>
+                Public recipes appear in Community Recipes. Turn this off to keep the recipe private to your account.
+              </p>
+            </div>
+          </label>
 
           <div className={styles.actions}>
             <Button type="submit" fullWidth disabled={loading || success}>

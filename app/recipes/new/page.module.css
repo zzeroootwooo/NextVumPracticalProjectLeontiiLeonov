@@ -85,6 +85,40 @@
   gap: 20px;
 }
 
+.visibilityCard {
+  margin-top: 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px 22px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--gray-200);
+  background: var(--gray-50);
+  cursor: pointer;
+}
+
+.visibilityCard input {
+  margin-top: 4px;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+}
+
+.visibilityTitle {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 6px;
+}
+
+.visibilityText {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--gray-600);
+}
+
 .actions {
   display: flex;
   gap: 16px;
