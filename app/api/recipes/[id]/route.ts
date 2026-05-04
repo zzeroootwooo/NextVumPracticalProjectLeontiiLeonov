@@ -5,11 +5,12 @@ import { prisma } from "@/lib/prisma"
 // GET single recipe
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const recipe = await prisma.recipe.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         user: {
           select: {
@@ -41,7 +42,7 @@ export async function GET(
 // PUT update recipe
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
@@ -53,8 +54,9 @@ export async function PUT(
       )
     }
 
+    const { id } = await params
     const recipe = await prisma.recipe.findUnique({
-      where: { id: params.id }
+      where: { id }
     })
 
     if (!recipe) {
@@ -83,7 +85,7 @@ export async function PUT(
     }
 
     const updatedRecipe = await prisma.recipe.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         title,
         description,
@@ -115,7 +117,7 @@ export async function PUT(
 // DELETE recipe
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
@@ -127,8 +129,9 @@ export async function DELETE(
       )
     }
 
+    const { id } = await params
     const recipe = await prisma.recipe.findUnique({
-      where: { id: params.id }
+      where: { id }
     })
 
     if (!recipe) {
@@ -147,7 +150,7 @@ export async function DELETE(
     }
 
     await prisma.recipe.delete({
-      where: { id: params.id }
+      where: { id }
     })
 
     return NextResponse.json({ message: "Recipe deleted successfully" })

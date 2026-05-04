@@ -7,11 +7,12 @@ import DeleteButton from '@/components/DeleteButton'
 import { Recipe } from '@/types'
 import styles from './page.module.css'
 
-export default async function RecipeDetailPage({ params }: { params: { id: string } }) {
+export default async function RecipeDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth()
+  const { id } = await params
 
   const recipe = await prisma.recipe.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       user: {
         select: {
