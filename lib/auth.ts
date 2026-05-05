@@ -60,6 +60,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.id = token.id as string
       }
       return session
+    },
+    async authorized({ auth, request }) {
+      const isLoggedIn = !!auth?.user
+      const isProtectedRoute = request.nextUrl.pathname.startsWith('/recipes/new') ||
+                               request.nextUrl.pathname.match(/\/recipes\/[^/]+\/edit/)
+
+      if (isProtectedRoute && !isLoggedIn) {
+        return false
+      }
+
+      return true
     }
   }
 })
